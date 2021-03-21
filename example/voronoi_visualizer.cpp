@@ -7,10 +7,21 @@
 
 // See http://www.boost.org for updates, documentation, and revision history.
 
+#define GL_SILENCE_DEPRECATION
+
 #include <iostream>
 #include <vector>
 
 #include <QtOpenGL/QGLWidget>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QApplication>
 #include <QtGui/QtGui>
 
 #include <boost/polygon/polygon.hpp>
