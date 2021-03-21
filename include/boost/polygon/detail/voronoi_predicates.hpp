@@ -1138,25 +1138,27 @@ class voronoi_predicates {
              const site_type& site3,
              int point_index,
              circle_type& c_event) {
-      if (false && ((site1.point0() == site2.point0()) || (site1.point0() == site2.point1())) &&
-                   ((site1.point0() == site3.point0()) || (site1.point0() == site3.point1()))) {
+      if (((site1.point0() == site2.point0()) || (site1.point0() == site2.point1())) &&
+          ((site1.point0() == site3.point0()) || (site1.point0() == site3.point1()))) {
           
-        // point_index=1 => site2.point0 site3.point1
-        // point_index=2 => site2.point1 site3.point0
-        std::cout << std::right <<  "x:" << std::setw(5) << site1.point0().x()
-                  << " y:" << std::setw(5) << site1.point0().y() << " point_index:" << point_index;
-        if (site1.point0() == site2.point0()) {
-          std::cout << " site2.point0";
-        } else if (site1.point0() == site2.point1()) {
-          std::cout << " site2.point1";
+        if (false) {
+          // point_index=1 => site2.point0 site3.point1
+          // point_index=2 => site2.point1 site3.point0
+          std::cout << std::right <<  "x:" << std::setw(5) << site1.point0().x()
+                    << " y:" << std::setw(5) << site1.point0().y() << " point_index:" << point_index;
+          if (site1.point0() == site2.point0()) {
+            std::cout << " site2.point0";
+          } else if (site1.point0() == site2.point1()) {
+            std::cout << " site2.point1";
+          }
+          if (site1.point0() == site3.point0()) {
+            std::cout << " site3.point0";
+          } else if (site1.point0() == site3.point1()) {
+            std::cout << " site3.point1";
+          }
+          std::cout << std::endl;
         }
-        if (site1.point0() == site3.point0()) {
-          std::cout << " site3.point0";
-        } else if (site1.point0() == site3.point1()) {
-          std::cout << " site3.point1";
-        }
-        std::cout << std::endl;
-
+        
         // we alreay know the exact location of the event, no need to re-calculate it
         c_event = circle_type(to_fpt(site1.point0().x()), to_fpt(site1.point0().y()),
                               to_fpt(site1.point0().x()));
