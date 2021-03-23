@@ -126,7 +126,11 @@ class robust_fpt {
       this->re_ = temp + ROUNDING_ERROR;
     }
     this->fpv_ = fpv;
-    return *this;
+      assert(isfinite(fpv_));
+      if (isnan(re_)){
+          std::cout << "re is nan:" << re_ << std::endl;
+      }
+      return *this;
   }
 
   robust_fpt& operator-=(const robust_fpt& that) {
@@ -141,6 +145,10 @@ class robust_fpt {
          temp = -temp;
       this->re_ = temp + ROUNDING_ERROR;
     }
+      assert(isfinite(fpv_));
+      if (isnan(re_)){
+          std::cout << "re is nan:" << re_ << std::endl;
+      }
     this->fpv_ = fpv;
     return *this;
   }
@@ -148,13 +156,21 @@ class robust_fpt {
   robust_fpt& operator*=(const robust_fpt& that) {
     this->re_ += that.re_ + ROUNDING_ERROR;
     this->fpv_ *= that.fpv_;
-    return *this;
+      assert(isfinite(fpv_));
+      if (isnan(re_)){
+          std::cout << "re is nan:" << re_ << std::endl;
+      }
+      return *this;
   }
 
   robust_fpt& operator/=(const robust_fpt& that) {
     this->re_ += that.re_ + ROUNDING_ERROR;
     this->fpv_ /= that.fpv_;
-    return *this;
+      assert(isfinite(fpv_));
+      if (isnan(re_)){
+          std::cout << "re is nan:" << re_ << std::endl;
+      }
+      return *this;
   }
 
   robust_fpt operator+(const robust_fpt& that) const {
@@ -170,7 +186,11 @@ class robust_fpt {
         temp = -temp;
       re = temp + ROUNDING_ERROR;
     }
-    return robust_fpt(fpv, re);
+      assert(isfinite(fpv_));
+      if (isnan(re)){
+          std::cout << "re is nan:" << re << std::endl;
+      }
+      return robust_fpt(fpv, re);
   }
 
   robust_fpt operator-(const robust_fpt& that) const {
@@ -186,19 +206,31 @@ class robust_fpt {
         temp = -temp;
       re = temp + ROUNDING_ERROR;
     }
+      assert(isfinite(fpv));
+      
+      if (isnan(re)){
+          std::cout << "re is nan:" << re << std::endl;
+      }
+      //assert(isnan(re));
     return robust_fpt(fpv, re);
   }
 
   robust_fpt operator*(const robust_fpt& that) const {
     floating_point_type fpv = this->fpv_ * that.fpv_;
     relative_error_type re = this->re_ + that.re_ + ROUNDING_ERROR;
+      assert(isfinite(fpv));
+      assert(isfinite(re));
     return robust_fpt(fpv, re);
   }
 
   robust_fpt operator/(const robust_fpt& that) const {
     floating_point_type fpv = this->fpv_ / that.fpv_;
     relative_error_type re = this->re_ + that.re_ + ROUNDING_ERROR;
-    return robust_fpt(fpv, re);
+      assert(isfinite(fpv));
+      if (isnan(re)){
+          std::cout << "re is nan:" << re << std::endl;
+      }
+      return robust_fpt(fpv, re);
   }
 
   robust_fpt sqrt() const {
