@@ -292,6 +292,12 @@ class voronoi_builder {
         for(i=beach_line_.begin();i!=beach_line_.end();i++){
             std::cout << (cmp(i->first, new_key)?"true":"false") << " " << (cmp(new_key, i->first)?"true":"false") << std::endl;
         }
+        std::cout << std::endl << "lower_bound check for corruptions:" << std::endl;
+        std::cout << "cmp(i,j) cmp(j,i)" << std::endl;
+        beach_line_iterator j = beach_line_.begin()++;
+        for(i=beach_line_.begin();j!=beach_line_.end();i++, j++){
+            std::cout << (cmp(i->first, j->first)?"true":"false") << "    " << (cmp(j->first, i->first)?"true":"false") << std::endl;
+        }
     }
     beach_line_iterator right_it = beach_line_.lower_bound(new_key);
 
