@@ -21,7 +21,7 @@
 #include "detail/voronoi_structures.hpp"
 
 #include "voronoi_geometry_type.hpp"
-
+#include <iostream>
 namespace boost {
 namespace polygon {
 // GENERAL INFO:
@@ -284,6 +284,15 @@ class voronoi_builder {
     // Find the node in the binary search tree with left arc
     // lying above the new site point.
     key_type new_key(*site_event_iterator_);
+    {
+        // try to figure out why Rust BTreeMap sometimes picks the incorrect beachline key.
+        beach_line_iterator i;
+        node_comparer_type cmp;
+        std::cout << std::endl << "lower_bound:" << std::endl;
+        for(i=beach_line_.begin();i!=beach_line_.end();i++){
+            std::cout << (cmp(i->first, new_key)?"true":"false") << " " << (cmp(new_key, i->first)?"true":"false") << std::endl;
+        }
+    }
     beach_line_iterator right_it = beach_line_.lower_bound(new_key);
 
     for (; site_event_iterator_ != last; ++site_event_iterator_) {
