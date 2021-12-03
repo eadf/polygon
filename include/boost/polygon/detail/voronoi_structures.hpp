@@ -230,6 +230,7 @@ class site_event {
 //   center_y_ - center y-coordinate;
 //   lower_x_ - leftmost x-coordinate;
 //   is_active_ - states whether circle event is still active.
+//   id - number used to sort otherwise identical circle events
 // NOTE: lower_y coordinate is always equal to center_y.
 template <typename T>
 class circle_event {
@@ -244,7 +245,10 @@ class circle_event {
       center_x_(c_x),
       center_y_(c_y),
       lower_x_(lower_x),
-      is_active_(true) {}
+      is_active_(true) {
+          static std::size_t id = 0;
+          id_ = id++;
+      }
 
   coordinate_type x() const {
     return center_x_;
@@ -285,11 +289,16 @@ class circle_event {
     is_active_ = false;
     return *this;
   }
+  
+  std::size_t id() const {
+      return id_;
+  }
 
  private:
   coordinate_type center_x_;
   coordinate_type center_y_;
   coordinate_type lower_x_;
+  std::size_t id_;
   bool is_active_;
 };
 

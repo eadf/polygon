@@ -175,7 +175,13 @@ class voronoi_predicates {
       if (lhs.lower_x() != rhs.lower_x()) {
         return lhs.lower_x() < rhs.lower_x();
       }
-      return lhs.y() < rhs.y();
+      if (lhs.y() != rhs.y()) {
+        return lhs.y() < rhs.y();
+      } else {
+        // If everything else is equal, compare the ages of the circle events.
+        // Youngest circle event first.
+        return lhs.id() > rhs.id();
+      }
     }
 
    private:
