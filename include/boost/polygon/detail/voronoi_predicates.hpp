@@ -13,6 +13,7 @@
 #include <utility>
 
 #include "voronoi_robust_fpt.hpp"
+#include <iostream>
 
 namespace boost {
 namespace polygon {
@@ -178,9 +179,16 @@ class voronoi_predicates {
       if (lhs.y() != rhs.y()) {
         return lhs.y() < rhs.y();
       } else {
-        // If everything else is equal, compare the ages of the circle events.
-        // Youngest circle event first.
-        return lhs.id() > rhs.id();
+        // If everything else is equal, compare by the active status of the circle events.
+        if (lhs.is_active() != rhs.is_active()){
+            std::cout << "lhs.is_active():" << (lhs.is_active()?"true":"false") << "!= rhs.is_active():" << (rhs.is_active()?"true":"false") <<
+            " => " << ((lhs.is_active() > rhs.is_active())?"true":"false") << std::endl;
+          return lhs.is_active() > rhs.is_active();
+        }
+        // If everything else is equal, compare by the compromised status of the circle events.
+        std::cout << "lhs.is_compromised():" << (lhs.is_compromised()?"true":"false") << " > rhs.is_compromised():" << (rhs.is_compromised()?"true":"false") <<
+          " => " << ((lhs.is_compromised() > rhs.is_compromised())?"true":"false") << std::endl;
+        return lhs.is_compromised() > rhs.is_compromised();
       }
     }
 
@@ -1351,6 +1359,41 @@ class voronoi_predicates {
               site1, site2, site3, point_index, c_event,
         recompute_c_x, recompute_c_y, recompute_lower_x);
       }
+        
+      if (true) {
+        // Vector: site2.point0 -> CE
+        fpt_type v2_0c[2] = {c_event.x() - to_fpt(site2.point0().x()), c_event.y() - to_fpt(site2.point0().y())};
+        // Vector: site2.point0 -> site2.point1
+        fpt_type v2_01[2] = {to_fpt(site2.point1().x()) - to_fpt(site2.point0().x()),
+                            to_fpt(site2.point1().y()) - to_fpt(site2.point0().y())};
+        fpt_type dot2 = (v2_0c[0]*v2_01[0] + v2_0c[1]*v2_01[1])/(v2_01[0] * v2_01[0] + v2_01[1] * v2_01[1]);
+       
+        // Vector: site3.point0 -> CE
+        fpt_type v3_0c[2] = {c_event.x() - to_fpt(site3.point0().x()), c_event.y() - to_fpt(site3.point0().y())};
+        // Vector: site3.point0 -> site3.point1
+        fpt_type v3_01[2] = {to_fpt(site3.point1().x()) - to_fpt(site3.point0().x()),
+                            to_fpt(site3.point1().y()) - to_fpt(site3.point0().y())};
+        fpt_type dot3 = (v3_0c[0]*v3_01[0] + v3_0c[1]*v3_01[1])/(v3_01[0] * v3_01[0] + v3_01[1] * v3_01[1]);
+       
+        bool dot2_is_bad = ulp_cmp(dot2, 0.0, ULPS) == ulp_cmp_type::LESS || ulp_cmp(dot2, 1.0, ULPS) == ulp_cmp_type::MORE;
+        bool dot3_is_bad = ulp_cmp(dot3, 0.0, ULPS) == ulp_cmp_type::LESS || ulp_cmp(dot3, 1.0, ULPS) == ulp_cmp_type::MORE;
+        if (dot2_is_bad || dot3_is_bad){
+           if (dot2_is_bad && dot3_is_bad){
+             std::cout << "set_compromised(true); dot2:" << dot2 << " dot3:" << dot3 << std::endl;
+             std::cout << "site1: (" << site1.point0().x() << "," << site1.point0().y() << ")" << std::endl;
+             std::cout << "site2: (" << site2.point0().x() << "," <<  site2.point0().y() << ")"
+                                 "(" << site2.point1().x() << "," <<  site2.point1().y() << ")" << std::endl;
+             std::cout << "site3: (" << site3.point0().x() << "," <<  site3.point0().y() << ")"
+                                 "(" << site3.point1().x() << "," <<  site3.point1().y() << ")" << std::endl;
+             std::cout << "CE: " << c_event.x() << ", " << c_event.y() << std::endl;
+           } else if (dot2_is_bad) {
+              std::cout << "set_compromised(true); dot2:" << dot2 << std::endl;
+           } else if (dot3_is_bad) {
+              std::cout << "set_compromised(true); dot3:" << dot3 << std::endl;
+           }
+           c_event.set_compromised(true);
+        }
+       }
     }
 
     void sss(const site_type& site1,

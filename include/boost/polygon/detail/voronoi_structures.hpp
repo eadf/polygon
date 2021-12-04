@@ -245,10 +245,8 @@ class circle_event {
       center_x_(c_x),
       center_y_(c_y),
       lower_x_(lower_x),
-      is_active_(true) {
-          static std::size_t id = 0;
-          id_ = id++;
-      }
+      is_active_(true),
+      compromised_(false){}
 
   coordinate_type x() const {
     return center_x_;
@@ -290,15 +288,19 @@ class circle_event {
     return *this;
   }
   
-  std::size_t id() const {
-      return id_;
+  bool is_compromised() const {
+    return compromised_;
+  }
+
+  void set_compromised(bool compromised){
+    compromised_ = compromised;
   }
 
  private:
   coordinate_type center_x_;
   coordinate_type center_y_;
   coordinate_type lower_x_;
-  std::size_t id_;
+  bool compromised_;
   bool is_active_;
 };
 
